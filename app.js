@@ -44,37 +44,57 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "http://localhost:4173",
+  "https://chat-app-inky-six.vercel.app",
+];
+
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: [
-      process.env.CLIENT_URL,
-      "http://localhost:5173",
-      "http://localhost:4173",
-    ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"],
-    credentials: true,
-    optionsSuccessStatus: 200,
-  },
-});
+// const io = new Server(server, {
+//   cors: {
+//     origin: [
+//       process.env.CLIENT_URL,
+//       "http://localhost:5173",
+//       "http://localhost:4173",
+//     ],
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"],
+//     credentials: true,
+//     optionsSuccessStatus: 200,
+//   },
+// });
 
-app.set("io", io);
+app.use(cookieParser());
+app.use(express.json());
 
 app.use(
   cors({
-    origin: [
-      process.env.CLIENT_URL,
-      "http://localhost:5173",
-      "http://localhost:4173",
-    ],
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          "The CORS policy for this site does not allow access from the specified Origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"],
     credentials: true,
     optionsSuccessStatus: 200,
   })
 );
-app.use(cookieParser());
-app.use(express.json());
+
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"],
+    credentials: true,
+    optionsSuccessStatus: 200,
+  },
+});
+app.set("io", io);
 
 app.use("/api/user", userRouter);
 app.use("/api/chat", chatRouter);
@@ -89,6 +109,11 @@ io.use((socket, next) => {
 
 app.get("/", (req, res) => {
   res.send("Hello world");
+});
+
+app.use((req, res, next) => {
+  console.log(`Request Origin: ${req.headers.origin}`);
+  next();
 });
 
 io.on("connection", (socket) => {
