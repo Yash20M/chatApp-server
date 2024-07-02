@@ -48,23 +48,11 @@ const allowedOrigins = [
   process.env.CLIENT_URL,
   "http://localhost:5173",
   "http://localhost:4173",
-  "https://chat-app-inky-six.vercel.app",
+  "https://chat-app-theta-ten-31.vercel.app/",
 ];
 
 const app = express();
 const server = createServer(app);
-// const io = new Server(server, {
-//   cors: {
-//     origin: [
-//       process.env.CLIENT_URL,
-//       "http://localhost:5173",
-//       "http://localhost:4173",
-//     ],
-//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"],
-//     credentials: true,
-//     optionsSuccessStatus: 200,
-//   },
-// });
 
 app.use(cookieParser());
 app.use(express.json());
