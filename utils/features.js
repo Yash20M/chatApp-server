@@ -74,7 +74,6 @@ const uploadFileToCloudinary = async (files = []) => {
   }
 };
 
-const deleteFilesFromCloud = async (public_id) => {};
 
 export {
   connectDb,

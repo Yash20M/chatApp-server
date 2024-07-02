@@ -45,10 +45,10 @@ cloudinary.config({
 });
 
 const allowedOrigins = [
+  "https://chat-app-theta-ten-31.vercel.app/",
   process.env.CLIENT_URL,
   "http://localhost:5173",
   "http://localhost:4173",
-  "https://chat-app-theta-ten-31.vercel.app/",
 ];
 
 const app = express();
