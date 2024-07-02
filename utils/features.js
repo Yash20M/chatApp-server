@@ -74,12 +74,10 @@ const uploadFileToCloudinary = async (files = []) => {
   }
 };
 
-
 export {
   connectDb,
   sendToken,
   cookieOption,
   emitEvent,
-  deleteFilesFromCloud,
   uploadFileToCloudinary,
 };
